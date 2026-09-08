@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container container-center">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <table class="table">
+                <tr>
+                    <th>Quiz Title</th>
+                    <th>Quiz Description</th>
+                </tr>
+                {% for quiz in quizs %}
+                <tr>
+                    <td>{{quiz.title}}</td>
+                    <td>{{quiz.description}}</td>
+                    <td><a href="{% url 'quizDetails' quiz.id %}" class="btn btn-primary">View Details</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
