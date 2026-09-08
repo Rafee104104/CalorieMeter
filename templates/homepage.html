@@ -6,15 +6,12 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <table class="table">
+                {% for userInfo in userInfo %}
                 <tr>
-                    <th>Quiz Title</th>
-                    <th>Quiz Description</th>
+                    <th>B.M.I</th>
                 </tr>
-                {% for quiz in quizs %}
                 <tr>
-                    <td>{{quiz.title}}</td>
-                    <td>{{quiz.description}}</td>
-                    <td><a href="{% url 'quizDetails' quiz.id %}" class="btn btn-primary">View Details</a></td>
+                    <td>{{ bmr }}</td>
                 </tr>
                 {% endfor %}
             </table>

@@ -5,17 +5,57 @@ from django.contrib.auth import *
 from .forms import *
 from django.contrib.auth.decorators import login_required
 # Create your views here.
-def homepage(request):
-    return
+
 
 def homepage(request):
-    bmi = Job.objects.all()
-    users = CustomUser.objects.all()
+    #calorieInfo = CalorieInfo.objects.all()
+    #userInfo = UserInfo.objects.all()
+    height = request.user.userinfo.Height
+    weight = request.user.userinfo.Weight
+    age = request.user.userinfo.Age
+    gender = request.user.userinfo.Gender
+    if gender == "Male":
+        bmr = 66.47+(13.75 * weight) + (5.003 * height) - (6.755 * age) 
+       
+    else:
+        bmr = 655.1+(9.563 * weight) + (1.850 * height) - (4.676 * age)  
+        
     context = {
-        "jobs": jobs
+        'userInfo' : userInfo,
+        'bmr' : bmr
     }
     return render(request, 'homepage.html', context)
 
+@login_required
+def userInfo(request):
+    userInfo = UserInfo.objects.get(users=request.user)
+    context = {
+        'userInfo' : userInfo
+    }
+    return render(request,'userInfo.html',context)
+
+@login_required
+def editUserInfo(request,id):
+    userInfo = userInfo.objects.get(id=id)
+    if request.method == "POST":
+            form = UserInfoForm(request.POST,instance=userInfo)
+            if form.is_valid():
+                form.save()
+                return redirect('homepage')
+    else:
+        form = UserInfoForm(instance=userInfo)
+    return render(request,'editUserInfo.html',{'form':form}) 
+@login_required
+def editCalorieInfo(request,id):
+    calorieInfo = CalorieInfo.objects.get(id=id)
+    if request.method == "POST":
+            form = CalorieInfoForm(request.POST,instance=calorieInfo)
+            if form.is_valid():
+                form.save()
+                return redirect('homepage')
+    else:
+        form = CalorieInfoForm(instance=calorieInfo)
+    return render(request,'editCalorieInfo.html',{'form':form}) 
 
 def registration(request):
     if(request.method == "POST"):
@@ -23,7 +63,10 @@ def registration(request):
         if form.is_valid():
             user = form.save(commit = False)
             user.set_password(form.cleaned_data['password1'])
+            
             user.save()
+            UserInfo.objects.create(user=user)
+            CalorieInfo.objects.create(user=user)
             return redirect('userlogin')
     else:
         form = RegistrationForm()
@@ -45,3 +88,8 @@ def userlogin(request):
         form = LoginForm()
 
     return render(request,'loginForm.html',{'form':form})
+
+@login_required
+def user_logout(request):
+    logout(request)
+    return redirect('registration')

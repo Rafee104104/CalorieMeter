@@ -1,26 +1,20 @@
 {% load static %}
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'homepage' %}">Quiz Portal</a>
+    <a class="navbar-brand" href="{% url 'homepage' %}">CalorieMeter</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'homepage' %}">Take Quiz</a>
-        </li> 
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'participant' %}">Participant</a>
+          <a class="nav-link active" aria-current="page" href="{% url 'homepage' %}">B.M.I</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'addQuiz' %}">addQuiz</a>
+          <a class="nav-link active" aria-current="page" href="{% url 'editCalorieInfo' %}">CalorieInfo</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'addQuestion' %}">addQuestion</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'addOption' %}">addOption</a>
+          <a class="nav-link active" aria-current="page" href="{% url 'editUserInfo' %}">UserInfo</a>
         </li>
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="{% url 'user_logout' %}">Logout</a>
