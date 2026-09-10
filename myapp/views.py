@@ -13,20 +13,21 @@ def homepage(request):
         weight = request.user.userinfo.Weight
         age = request.user.userinfo.Age
         gender = request.user.userinfo.Gender
-        if gender and age and height and weight:
+        consumed_calorie = request.user.calorieinfo.Calorie_Consumed
+        if gender and age and height and weight and consumed_calorie:
             if gender == "Male":
                 bmr = 66.47 + (13.75 * weight) + (5.003 * height) - (6.755 * age) 
 
-                if bmr > request.user.CalorieInfo.Calorie_Consumed:
+                if bmr > consumed_calorie:
                     msg = """
                             You Need to consumed more calorie to gain weight 
                             Now you will lose weight.
                           """
-                elif bmr == request.user.CalorieInfo.Calorie_Consumed:
+                elif bmr == consumed_calorie:
                     msg = """
                             You are not gain or lose weight.
                           """
-                elif bmr < request.user.CalorieInfo.Calorie_Consumed:
+                elif bmr < consumed_calorie:
                     msg = """
                             You Need to consumed less calorie to lose weight 
                             Now you will gain weight.
