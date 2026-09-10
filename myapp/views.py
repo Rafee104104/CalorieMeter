@@ -16,14 +16,32 @@ def homepage(request):
         if gender and age and height and weight:
             if gender == "Male":
                 bmr = 66.47 + (13.75 * weight) + (5.003 * height) - (6.755 * age) 
+
+                if bmr > request.user.CalorieInfo.Calorie_Consumed:
+                    msg = """
+                            You Need to consumed more calorie to gain weight 
+                            Now you will lose weight.
+                          """
+                elif bmr == request.user.CalorieInfo.Calorie_Consumed:
+                    msg = """
+                            You are not gain or lose weight.
+                          """
+                elif bmr < request.user.CalorieInfo.Calorie_Consumed:
+                    msg = """
+                            You Need to consumed less calorie to lose weight 
+                            Now you will gain weight.
+                          """
         
             else:
                 bmr = 655.1 + (9.563 * weight) + (1.850 * height) - (4.676 * age)
+
+            
     else:
         return redirect('userlogin')
         
     context = {
-        'bmr' : bmr
+        'bmr' : bmr,
+        'msg' :msg
     }
     return render(request, 'homepage.html',context)
 
