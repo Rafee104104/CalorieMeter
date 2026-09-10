@@ -36,6 +36,21 @@ def homepage(request):
             else:
                 bmr = 655.1 + (9.563 * weight) + (1.850 * height) - (4.676 * age)
 
+                if bmr > consumed_calorie:
+                    msg = """
+                            You Need to consumed more calorie to gain weight 
+                            Now you will lose weight.
+                          """
+                elif bmr == consumed_calorie:
+                    msg = """
+                            You are not gain or lose weight.
+                          """
+                elif bmr < consumed_calorie:
+                    msg = """
+                            You Need to consumed less calorie to lose weight 
+                            Now you will gain weight.
+                          """
+
             
     else:
         return redirect('userlogin')
