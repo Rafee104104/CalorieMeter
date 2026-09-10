@@ -8,35 +8,44 @@ from django.contrib.auth.decorators import login_required
 
 
 def homepage(request):
-    #calorieInfo = CalorieInfo.objects.all()
-    #userInfo = UserInfo.objects.all()
-    height = request.user.userinfo.Height
-    weight = request.user.userinfo.Weight
-    age = request.user.userinfo.Age
-    gender = request.user.userinfo.Gender
-    if gender == "Male":
-        bmr = 66.47+(13.75 * weight) + (5.003 * height) - (6.755 * age) 
-       
+    if request.user.is_authenticated:
+        height = request.user.userinfo.Height
+        weight = request.user.userinfo.Weight
+        age = request.user.userinfo.Age
+        gender = request.user.userinfo.Gender
+        if gender and age and height and weight:
+            if gender == "Male":
+                bmr = 66.47 + (13.75 * weight) + (5.003 * height) - (6.755 * age) 
+        
+            else:
+                bmr = 655.1 + (9.563 * weight) + (1.850 * height) - (4.676 * age)
     else:
-        bmr = 655.1+(9.563 * weight) + (1.850 * height) - (4.676 * age)  
+        return redirect('userlogin')
         
     context = {
-        'userInfo' : userInfo,
         'bmr' : bmr
     }
-    return render(request, 'homepage.html', context)
+    return render(request, 'homepage.html',context)
 
 @login_required
 def userInfo(request):
-    userInfo = UserInfo.objects.get(users=request.user)
+    userInfo = UserInfo.objects.get(user=request.user)
     context = {
         'userInfo' : userInfo
     }
     return render(request,'userInfo.html',context)
 
 @login_required
-def editUserInfo(request,id):
-    userInfo = userInfo.objects.get(id=id)
+def calorieInfo(request):
+    calorieInfo = CalorieInfo.objects.get(user=request.user)
+    context = {
+        'calorieInfo' : calorieInfo
+    }
+    return render(request,'calorieInfo.html',context)
+
+@login_required
+def editUserInfo(request):
+    userInfo = request.user.userinfo
     if request.method == "POST":
             form = UserInfoForm(request.POST,instance=userInfo)
             if form.is_valid():
@@ -46,8 +55,9 @@ def editUserInfo(request,id):
         form = UserInfoForm(instance=userInfo)
     return render(request,'editUserInfo.html',{'form':form}) 
 @login_required
-def editCalorieInfo(request,id):
-    calorieInfo = CalorieInfo.objects.get(id=id)
+def editCalorieInfo(request):
+    #user = request.user
+    calorieInfo = request.user.calorieinfo
     if request.method == "POST":
             form = CalorieInfoForm(request.POST,instance=calorieInfo)
             if form.is_valid():

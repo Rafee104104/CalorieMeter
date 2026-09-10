@@ -54,9 +54,9 @@ class RegistrationForm(UserCreationForm):
 class UserInfoForm(forms.ModelForm):
     class Meta:
         model = UserInfo
-        fields = ('__all__')
-
+        fields = ['Name','Age','Gender','Height','Weight']
+#  Name, Age, Gender, Height, Weight   input daily consumed calories (Item name, Calorie consumed) 
 class CalorieInfoForm(forms.ModelForm):
     class Meta:
         model = CalorieInfo
-        fields = ('__all__')
+        fields = ['Item_Name','Calorie_Consumed']

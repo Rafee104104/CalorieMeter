@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<br><br>
+<div class="container container-center">
+    <div class="card border-none " style="max-width: 50rem;">
+        <div class="card-body text-primary">
+            <h5 class="card-title">Calorie Informations</h5>
+            <p class="card-text">Item Name : {{calorieInfo.Age}}</p>
+            <p class="card-text">Calorie Consumed : {{calorieInfo.Name}}</p>
+            
+            <br><br>
+            <a href="{% url 'calorieInfo' %}" class="btn btn-primary">Update</a>
+            <br>
+        </div>
+    </div>
+</div>
+{% endblock %}

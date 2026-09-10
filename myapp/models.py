@@ -24,7 +24,7 @@ class UserInfo(models.Model):
         return self.Name
 
 class CalorieInfo(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, related_name='calorieinfo')
+    user = models.OneToOneField(CustomUser, on_delete=models.DO_NOTHING, related_name='calorieinfo')
     Item_Name = models.CharField(max_length=60,blank=True,null=True)
     Calorie_Consumed = models.FloatField(blank=True,null=True)
 
