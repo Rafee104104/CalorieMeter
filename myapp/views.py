@@ -9,11 +9,12 @@ from django.contrib.auth.decorators import login_required
 
 def homepage(request):
     if request.user.is_authenticated:
-        height = request.user.userinfo.Height
-        weight = request.user.userinfo.Weight
-        age = request.user.userinfo.Age
-        gender = request.user.userinfo.Gender
-        consumed_calorie = request.user.calorieinfo.Calorie_Consumed
+        user = request.user
+        height = user.userinfo.Height
+        weight = user.userinfo.Weight
+        age = user.userinfo.Age
+        gender = user.userinfo.Gender
+        consumed_calorie = user.calorieinfo.Calorie_Consumed
         if gender and age and height and weight and consumed_calorie:
             if gender == "Male":
                 bmr = 66.47 + (13.75 * weight) + (5.003 * height) - (6.755 * age) 
