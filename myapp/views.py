@@ -4,75 +4,93 @@ from .models import *
 from django.contrib.auth import *
 from .forms import *
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
+from django.utils import timezone
 # Create your views here.
 
 
-def homepage(request):
-    if request.user.is_authenticated:
-        user = request.user
-        height = user.userinfo.Height
-        weight = user.userinfo.Weight
-        age = user.userinfo.Age
-        gender = user.userinfo.Gender
-        consumed_calorie = user.calorieinfo.Calorie_Consumed
-        if gender and age and height and weight and consumed_calorie:
-            if gender == "Male":
-                bmr = 66.47 + (13.75 * weight) + (5.003 * height) - (6.755 * age) 
+def bmr(request):   
+    total_calorie = CalorieInfo.objects.filter(
+        users=request.user,
+        date=timezone.localdate()
+    ).aggregate(
+        total=Sum('Calorie_Consumed')
+    )['total'] or 0
+    height = request.user.userinfo.Height
+    weight = request.user.userinfo.Weight
+    age = request.user.userinfo.Age
+    gender = request.user.userinfo.Gender
+    bmr = None
+    msg = ""
+    none_msg = ""
+    if gender and age and height and weight and total_calorie is not None:
+        if gender.lower() == "male":
+            bmr = 66.47 + (13.75 * weight) + (5.003 * height) - (6.755 * age) 
 
-                if bmr > consumed_calorie:
-                    msg = """
-                            You Need to consumed more calorie to gain weight 
-                            Now you will lose weight.
-                          """
-                elif bmr == consumed_calorie:
-                    msg = """
-                            You are not gain or lose weight.
-                          """
-                elif bmr < consumed_calorie:
-                    msg = """
-                            You Need to consumed less calorie to lose weight 
-                            Now you will gain weight.
-                          """
-        
-            else:
-                bmr = 655.1 + (9.563 * weight) + (1.850 * height) - (4.676 * age)
+            if bmr > total_calorie:
+                msg = """
+                        You Need to consumed more calorie to gain weight 
+                        Now you will lose weight.
+                        """
+            elif bmr == total_calorie:
+                msg = """
+                        You are not gain or lose weight.
+                        """
+            elif bmr < total_calorie:
+                msg = """
+                        You Need to consumed less calorie to lose weight 
+                        Now you will gain weight.
+                        """
+    
+        else:
+            bmr = 655.1 + (9.563 * weight) + (1.850 * height) - (4.676 * age)
 
-                if bmr > consumed_calorie:
-                    msg = """
-                            You Need to consumed more calorie to gain weight 
-                            Now you will lose weight.
-                          """
-                elif bmr == consumed_calorie:
-                    msg = """
-                            You are not gain or lose weight.
-                          """
-                elif bmr < consumed_calorie:
-                    msg = """
-                            You Need to consumed less calorie to lose weight 
-                            Now you will gain weight.
-                          """
-
-            
+            if bmr > total_calorie:
+                msg = """
+                        You Need to consumed more calorie to gain weight 
+                        Now you will lose weight.
+                        """
+            elif bmr == total_calorie:
+                msg = """
+                        You are not gain or lose weight.
+                        """
+            elif bmr < total_calorie:
+                msg = """
+                        You Need to consumed less calorie to lose weight 
+                        Now you will gain weight.
+                        """
     else:
-        return redirect('userlogin')
+        none_msg = "Please Input height, weight, age, gender and consumed calories"
+    request.user.userinfo.bmr = bmr
+    request.user.userinfo.save()
+    
         
     context = {
         'bmr' : bmr,
-        'msg' :msg
+        'msg' :msg,
+        'none_msg' : none_msg,
+        'total_calorie' : total_calorie
     }
-    return render(request, 'homepage.html',context)
+    return render(request, 'bmr.html',context)
+@login_required
+def homepage(request):
+    return render(request,'homepage.html')
 
 @login_required
 def userInfo(request):
-    userInfo = UserInfo.objects.get(user=request.user)
+    userinfo = UserInfo.objects.filter(
+        users=request.user
+    )
     context = {
-        'userInfo' : userInfo
+        'userInfo' : userinfo
     }
     return render(request,'userInfo.html',context)
 
 @login_required
 def calorieInfo(request):
-    calorieInfo = CalorieInfo.objects.get(user=request.user)
+    calorieInfo = CalorieInfo.objects.filter(
+        users=request.user
+    ).order_by('-date')
     context = {
         'calorieInfo' : calorieInfo
     }
@@ -80,26 +98,27 @@ def calorieInfo(request):
 
 @login_required
 def editUserInfo(request):
-    userInfo = request.user.userinfo
+    user = CustomUser.objects.get(id=request.user.id)
+    userInfo = user.userinfo  
     if request.method == "POST":
             form = UserInfoForm(request.POST,instance=userInfo)
             if form.is_valid():
                 form.save()
-                return redirect('homepage')
+                return redirect('userInfo')
     else:
         form = UserInfoForm(instance=userInfo)
     return render(request,'editUserInfo.html',{'form':form}) 
 @login_required
 def editCalorieInfo(request):
-    #user = request.user
-    calorieInfo = request.user.calorieinfo
+    user =CustomUser.objects.get(id=request.user.id)
+    calorieInfo = user.calorieinfo
     if request.method == "POST":
             form = CalorieInfoForm(request.POST,instance=calorieInfo)
             if form.is_valid():
                 form.save()
                 return redirect('homepage')
     else:
-        form = CalorieInfoForm(instance=calorieInfo)
+        form = CalorieInfoForm()
     return render(request,'editCalorieInfo.html',{'form':form}) 
 
 def registration(request):
@@ -110,8 +129,14 @@ def registration(request):
             user.set_password(form.cleaned_data['password1'])
             
             user.save()
-            UserInfo.objects.create(user=user)
-            CalorieInfo.objects.create(user=user)
+            userinfo = UserInfo(
+                users=user
+            )
+            userinfo.save()
+            calorieinfo = CalorieInfo(
+                users=user
+            )
+            calorieinfo.save()
             return redirect('userlogin')
     else:
         form = RegistrationForm()

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container container-center">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <table class="table">
+                
+                <tr>
+                    <th>B.M.R</th>
+                    <th>Guidline</th>
+                </tr>
+                <tr>
+                    <td>{{ bmr }}</td>
+                    {% if msg is not None %}
+                    <td>{{ msg }}</td>
+                    {% else %}
+                    <td>{{none_msg}}</td>
+                    {% endif %}
+                </tr>
+                <tr>
+                    <th>Calorie Intake Today</th>
+                </tr>
+                <tr>
+                    <td>{{total_calorie}}</td>
+                </tr>
+            </table>
+            <form method="POST">
+                <h2>Edit Calorie Information</h2><br>
+                {% csrf_token %}
+                {{form.as_p}}
+                <br>
+                
+                <input class="btn btn-success" type="submit" value="Update">
+            </form> 
+        </div>
+    </div>
+</div>
+
+{% endblock %}

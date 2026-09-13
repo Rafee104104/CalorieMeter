@@ -5,13 +5,14 @@
     <div class="card border-none " style="max-width: 50rem;">
         <div class="card-body text-primary">
             <h5 class="card-title">User Informations</h5>
-            <p class="card-text">Username : {{userInfo.Name}}</p>
-            <p class="card-text">Age : {{userInfo.Age}}</p>
-            <p class="card-text">Gender Number : {{userInfo.Gender}}</p>
-            <p class="card-text">Height Email : {{userInfo.Height}}</p>
-            
+            <p class="card-text">Username : {{request.user.userinfo.Name}}</p>
+            <p class="card-text">Age : {{request.user.userinfo.Age}}</p>
+            <p class="card-text">Gender Number : {{request.user.userinfo.Gender}}</p>
+            <p class="card-text">Height Email : {{request.user.userinfo.Height}}</p>
+            <p class="card-text">Weight : {{request.user.userinfo.Weight}}</p>
+            <p class="card-text">B.M.R : {{request.user.userinfo.bmr}}</p>
             <br><br>
-            <a href="{% url 'userInfo' %}" class="btn btn-primary">Update</a>
+            <a href="{% url 'editUserInfo' %}" class="btn btn-primary">Update</a>
             <br>
         </div>
     </div>

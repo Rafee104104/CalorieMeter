@@ -8,13 +8,16 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'homepage' %}">B.M.R</a>
+          <a class="nav-link active" aria-current="page" href="{% url 'bmr' %}">B.M.R</a>
         </li>
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="{% url 'editCalorieInfo' %}">CalorieInfo</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'editUserInfo' %}">UserInfo</a>
+          <a class="nav-link active" aria-current="page" href="{% url 'editUserInfo' %}">EditUserInfo</a>
+          <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'userInfo' %}">UserInfo</a>
+        </li>
         </li>
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="{% url 'user_logout' %}">Logout</a>

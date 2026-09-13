@@ -48,10 +48,10 @@ class RegistrationForm(UserCreationForm):
 
     class Meta:
         model = CustomUser
-        fields = ['username','email','password1','password2']
+        fields = ['username','email','password1','password2','user_type','display_name']
 
 
-class UserInfoForm(forms.ModelForm):
+class UserInfoForm(forms.ModelForm):    
     class Meta:
         model = UserInfo
         fields = ['Name','Age','Gender','Height','Weight']

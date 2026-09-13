@@ -3,30 +3,33 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
 class CustomUser(AbstractUser):
-    User = {
+    Gender = {
         ('male','Male'),
         ('female','Female')
     }
-    user_type = models.CharField(max_length=40,choices=User,null=True)
+    user_type = models.CharField(max_length=40,choices=Gender,null=True)
+    display_name = models.CharField(max_length=40,null=True)
     
-    def __int__(self):
+    def __str__(self):
         return self.username
-#  Name, Age, Gender, Height, Weight   input daily consumed calories (Item name, Calorie consumed) 
 class UserInfo(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.DO_NOTHING, related_name='userinfo')
+    users = models.OneToOneField(CustomUser, on_delete=models.DO_NOTHING, related_name='userinfo')
     Name = models.CharField(max_length=60,blank=True,null=True)
-    Age = models.IntegerField(blank=True,null=True)
+    Age = models.FloatField(blank=True,null=True)
     Gender = models.CharField(max_length=60,blank=True,null=True)
     Height = models.FloatField(blank=True,null=True)
     Weight = models.FloatField(blank=True,null=True)
-
+    bmr = models.FloatField(blank=True,null=True)
+    
+    
     def __str__(self):
-        return self.Name
+        return self.users.username
 
 class CalorieInfo(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.DO_NOTHING, related_name='calorieinfo')
+    users = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, related_name='calorieinfo')
     Item_Name = models.CharField(max_length=60,blank=True,null=True)
+    date = models.DateField(auto_now_add=True)
     Calorie_Consumed = models.FloatField(blank=True,null=True)
 
     def __str__(self):
-        return self.Item_Name
+        return self.users.username
