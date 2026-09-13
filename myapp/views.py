@@ -72,27 +72,38 @@ def bmr(request):
         'total_calorie' : total_calorie
     }
     return render(request, 'bmr.html',context)
-@login_required
-def homepage(request):
-    return render(request,'homepage.html')
+
+
 
 @login_required
 def userInfo(request):
-    userinfo = UserInfo.objects.filter(
-        users=request.user
-    )
-    context = {
-        'userInfo' : userinfo
-    }
-    return render(request,'userInfo.html',context)
+    height = request.user.userinfo.Height
+    weight = request.user.userinfo.Weight
+    age = request.user.userinfo.Age
+    gender = request.user.userinfo.Gender
+    bmr = None
+    msg = ""
+    none_msg = ""
+    if gender and age and height and weight is not None:
+        if gender.lower() == "male":
+            bmr = 66.47 + (13.75 * weight) + (5.003 * height) - (6.755 * age)    
+        else:
+            bmr = 655.1 + (9.563 * weight) + (1.850 * height) - (4.676 * age)
+    
+    request.user.userinfo.bmr = bmr
+    request.user.userinfo.save()
+    return render(request,'userInfo.html')
 
 @login_required
 def calorieInfo(request):
-    calorieInfo = CalorieInfo.objects.filter(
+    total_calory = CalorieInfo.objects.filter(
         users=request.user
-    ).order_by('-date')
+    ).aggregate(
+        total=Sum('Calorie_Consumed')
+    )['total'] or 0
     context = {
-        'calorieInfo' : calorieInfo
+        'total_calory' : total_calory,
+        
     }
     return render(request,'calorieInfo.html',context)
 
@@ -109,17 +120,19 @@ def editUserInfo(request):
         form = UserInfoForm(instance=userInfo)
     return render(request,'editUserInfo.html',{'form':form}) 
 @login_required
-def editCalorieInfo(request):
-    user =CustomUser.objects.get(id=request.user.id)
-    calorieInfo = user.calorieinfo
+def addCalorie(request):
+    # user =CustomUser.objects.get(id=request.user.id)
+    # calorieInfo = user.calorieinfo
     if request.method == "POST":
-            form = CalorieInfoForm(request.POST,instance=calorieInfo)
+            form = CalorieInfoForm(request.POST)
             if form.is_valid():
-                form.save()
-                return redirect('homepage')
+                calorie = form.save(commit=False)
+                calorie.users = request.user
+                calorie.save()
+                return redirect('bmr')
     else:
         form = CalorieInfoForm()
-    return render(request,'editCalorieInfo.html',{'form':form}) 
+    return render(request,'addCalorie.html',{'form':form}) 
 
 def registration(request):
     if(request.method == "POST"):
@@ -153,7 +166,7 @@ def userlogin(request):
             user=authenticate(username=username,password=password)
             if user:
                 login(request,user)
-                return redirect('homepage')
+                return redirect('bmr')
     else:
         form = LoginForm()
 

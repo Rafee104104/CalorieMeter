@@ -13,7 +13,7 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.username
 class UserInfo(models.Model):
-    users = models.OneToOneField(CustomUser, on_delete=models.DO_NOTHING, related_name='userinfo')
+    users = models.OneToOneField(CustomUser, on_delete=models.DO_NOTHING, related_name='userinfo',null=True,blank=True)
     Name = models.CharField(max_length=60,blank=True,null=True)
     Age = models.FloatField(blank=True,null=True)
     Gender = models.CharField(max_length=60,blank=True,null=True)
@@ -26,7 +26,7 @@ class UserInfo(models.Model):
         return self.users.username
 
 class CalorieInfo(models.Model):
-    users = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, related_name='calorieinfo')
+    users = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, related_name='calorieinfo',null=True,blank=True)
     Item_Name = models.CharField(max_length=60,blank=True,null=True)
     date = models.DateField(auto_now_add=True)
     Calorie_Consumed = models.FloatField(blank=True,null=True)

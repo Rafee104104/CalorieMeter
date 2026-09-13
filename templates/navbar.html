@@ -1,7 +1,7 @@
 {% load static %}
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'homepage' %}">CalorieMeter</a>
+    <a class="navbar-brand" href="{% url 'bmr' %}">{{request.user.username}}</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -11,13 +11,18 @@
           <a class="nav-link active" aria-current="page" href="{% url 'bmr' %}">B.M.R</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'editCalorieInfo' %}">CalorieInfo</a>
+          <a class="nav-link active" aria-current="page" href="{% url 'calorieInfo' %}">CalorieInfo</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'editUserInfo' %}">EditUserInfo</a>
-          <li class="nav-item">
+        <!-- <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'addCalorie' %}">addCalorie</a>
+        </li> -->
+        <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="{% url 'userInfo' %}">UserInfo</a>
         </li>
+        <!-- <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'editUserInfo' %}">EditUserInfo</a>
+        </li> -->
         </li>
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="{% url 'user_logout' %}">Logout</a>
