@@ -126,9 +126,9 @@ def addCalorie(request):
     if request.method == "POST":
             form = CalorieInfoForm(request.POST)
             if form.is_valid():
-                calorie = form.save(commit=False)
-                calorie.users = request.user
-                calorie.save()
+                calorieinfo = form.save(commit=False)
+                calorieinfo.users = request.user
+                calorieinfo.save()                
                 return redirect('bmr')
     else:
         form = CalorieInfoForm()
