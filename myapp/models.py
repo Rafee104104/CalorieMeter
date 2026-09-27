@@ -30,6 +30,8 @@ class CalorieInfo(models.Model):
     Item_Name = models.CharField(max_length=60,blank=True,null=True)
     date = models.DateField(auto_now_add=True)
     Calorie_Consumed = models.FloatField(blank=True,null=True)
+    
 
     def __str__(self):
         return self.users.username
+

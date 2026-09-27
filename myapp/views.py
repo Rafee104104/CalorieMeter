@@ -8,6 +8,7 @@ from django.db.models import Sum
 from django.utils import timezone
 # Create your views here.
 
+def calorieList(request)
 
 def bmr(request):   
     total_calorie = CalorieInfo.objects.filter(
