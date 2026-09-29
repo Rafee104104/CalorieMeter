@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import request
 from .models import *
 from django.contrib.auth import *
@@ -8,71 +8,55 @@ from django.db.models import Sum
 from django.utils import timezone
 # Create your views here.
 
-def calorieList(request)
 
-def bmr(request):   
-    total_calorie = CalorieInfo.objects.filter(
+@login_required
+def bmr(request):
+    today = timezone.localdate()
+    daily_items = CalorieInfo.objects.filter(
         users=request.user,
-        date=timezone.localdate()
-    ).aggregate(
+        date=today
+    )
+    
+    total_calorie = daily_items.aggregate(
         total=Sum('Calorie_Consumed')
     )['total'] or 0
+
     height = request.user.userinfo.Height
     weight = request.user.userinfo.Weight
     age = request.user.userinfo.Age
     gender = request.user.userinfo.Gender
+
     bmr = None
     msg = ""
     none_msg = ""
-    if gender and age and height and weight and total_calorie is not None:
-        if gender.lower() == "male":
-            bmr = 66.47 + (13.75 * weight) + (5.003 * height) - (6.755 * age) 
 
-            if bmr > total_calorie:
-                msg = """
-                        You Need to consumed more calorie to gain weight 
-                        Now you will lose weight.
-                        """
-            elif bmr == total_calorie:
-                msg = """
-                        You are not gain or lose weight.
-                        """
-            elif bmr < total_calorie:
-                msg = """
-                        You Need to consumed less calorie to lose weight 
-                        Now you will gain weight.
-                        """
-    
+    if gender and age is not None and height is not None and weight is not None:
+        if gender.lower() == "male":
+            bmr = 66.47 + (13.75 * weight) + (5.003 * height) - (6.755 * age)
         else:
             bmr = 655.1 + (9.563 * weight) + (1.850 * height) - (4.676 * age)
 
-            if bmr > total_calorie:
-                msg = """
-                        You Need to consumed more calorie to gain weight 
-                        Now you will lose weight.
-                        """
-            elif bmr == total_calorie:
-                msg = """
-                        You are not gain or lose weight.
-                        """
-            elif bmr < total_calorie:
-                msg = """
-                        You Need to consumed less calorie to lose weight 
-                        Now you will gain weight.
-                        """
+        if bmr > total_calorie:
+            msg = "Your calorie intake is below your BMR."
+        elif bmr < total_calorie:
+            msg = "Your calorie intake is above your BMR."
+        else:
+            msg = "Your calorie intake equals your BMR."
     else:
-        none_msg = "Please Input height, weight, age, gender and consumed calories"
+        none_msg = "Please input height, weight, age, and gender."
+
     request.user.userinfo.bmr = bmr
     request.user.userinfo.save()
-    
-        
+
     context = {
-        'bmr' : bmr,
-        'msg' :msg,
-        'none_msg' : none_msg,
-        'total_calorie' : total_calorie
+        'bmr': bmr,
+        'msg': msg,
+        'none_msg': none_msg,
+        'total_calorie': total_calorie,
+        'daily_items': daily_items,
     }
-    return render(request, 'bmr.html',context)
+
+    return render(request, 'bmr.html', context)
 
 
 
@@ -140,8 +124,7 @@ def registration(request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             user = form.save(commit = False)
-            user.set_password(form.cleaned_data['password1'])
-            
+            user.set_password(form.cleaned_data['password1'])            
             user.save()
             userinfo = UserInfo(
                 users=user
