@@ -16,7 +16,9 @@ def bmr(request):
         users=request.user,
         date=today
     )
-    
+   
+    for i in daily_items:
+        print(i.Item_Name)
     total_calorie = daily_items.aggregate(
         total=Sum('Calorie_Consumed')
     )['total'] or 0
@@ -47,6 +49,7 @@ def bmr(request):
 
     request.user.userinfo.bmr = bmr
     request.user.userinfo.save()
+   
 
     context = {
         'bmr': bmr,
