@@ -12,7 +12,11 @@
                     <th>Guidline</th>
                 </tr>
                 <tr>
+                    {% if bmr != None %}
                     <td>{{ bmr }}</td>
+                    {% else %}
+                    <center><td>Not enough data. Fillup B.M.R data</td></center>
+                    {% endif %}
                     {% if msg is not None %}
                     <td>{{ msg }}</td>
                     {% else %}
