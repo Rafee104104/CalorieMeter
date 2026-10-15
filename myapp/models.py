@@ -7,8 +7,6 @@ class CustomUser(AbstractUser):
         ('male','Male'),
         ('female','Female')
     }
-    user_type = models.CharField(max_length=40,choices=Gender,null=True)
-    display_name = models.CharField(max_length=40,null=True)
     
     def __str__(self):
         return self.username
